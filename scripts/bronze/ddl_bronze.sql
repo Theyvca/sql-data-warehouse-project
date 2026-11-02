@@ -9,38 +9,39 @@ Script Purpose:
 ===============================================================================
 */
 
-IF OBJECT_ID ('bronze.crm_cust_info', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_cust_info;
+CREATE DATABASE IF NOT EXISTS bronze;
 
-CREATE TABLE bronze.crm_cust_info (
+DROP TABLE IF EXISTS bronze.bronze_crm_cust_info;
+
+CREATE TABLE bronze.bronze_crm_cust_info (
     cst_id INT,
-    cst_key NVARCHAR(50),
-    cst_firstname NVARCHAR(50),
-    cst_lastname NVARCHAR(50),
-    cst_material_status NVARCHAR(50),
-    cst_gndr NVARCHAR(50),
+    cst_key VARCHAR(50),
+    cst_firstname VARCHAR(50),
+    cst_lastname VARCHAR(50),
+    cst_material_status VARCHAR(50),
+    cst_gndr VARCHAR(50),
     cst_create_date DATE
 );
 
-IF OBJECT_ID ('bronze.crm_prd_info', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_prd_info;
 
-CREATE TABLE bronze.crm_prd_info (
+DROP TABLE IF EXISTS bronze.bronze_crm_prd_info;
+
+CREATE TABLE bronze.bronze_crm_prd_info (
     prd_id INT,
-    prd_key NVARCHAR(50),
-    prd_nm NVARCHAR(50),
+    prd_key VARCHAR(50),
+    prd_nm VARCHAR(50),
     prd_cost INT,
-    prd_line NVARCHAR(50),
+    prd_line VARCHAR(50),
     prd_start_dt DATETIME,
     prd_end_dt DATETIME
 );
 
-IF OBJECT_ID ('bronze.crm_sales_details', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_sales_details;
 
-CREATE TABLE bronze.crm_sales_details (
-    sls_ord_num NVARCHAR(50),
-    sls_prd_key NVARCHAR(50),
+DROP TABLE IF EXISTS bronze.bronze_crm_sales_details;
+
+CREATE TABLE bronze.bronze_crm_sales_details (
+    sls_ord_num VARCHAR(50),
+    sls_prd_key VARCHAR(50),
     sls_cust_id INT,
     sls_order_dt INT,
     sls_ship_dt INT,
@@ -50,75 +51,35 @@ CREATE TABLE bronze.crm_sales_details (
     sls_price INT
 );
 
-IF OBJECT_ID ('bronze.erp_loc_a101', 'U') IS NOT NULL
-    DROP TABLE bronze.erp_loc_a101;
 
-CREATE TABLE bronze.erp_loc_a101 (
-    cid NVARCHAR(50),
-    cntry NVARCHAR(50)
-);
+DROP TABLE IF EXISTS bronze.bronze_erp_loc_a101;
 
-DROP TABLE IF EXISTS bronze_erp_loc_a101;
-
-CREATE TABLE bronze_erp_loc_a101 (
+CREATE TABLE bronze.bronze_erp_loc_a101 (
     cid VARCHAR(50),
     cntry VARCHAR(50)
 );
 
-DROP TABLE IF EXISTS bronze_erp_px_g1v2;
 
-CREATE TABLE bronze_erp_px_g1v2 (
+DROP TABLE IF EXISTS bronze.bronze_erp_cust_az12;
+
+CREATE TABLE bronze.bronze_erp_cust_az12 (
+    cid VARCHAR(50),
+    bdate DATE,
+    gen VARCHAR(50)
+);
+
+
+DROP TABLE IF EXISTS bronze.bronze_erp_px_g1v2;
+
+CREATE TABLE bronze.bronze_erp_px_g1v2 (
     id VARCHAR(50),
     cat VARCHAR(50),
     subcat VARCHAR(50),
     maintenance VARCHAR(50)
 );
 
-/*
-============================================================
-Create Database and Schemas
-============================================================
-Script Purpose:
-    This script creates a new database named 'DataWarehouse'
-    after checking if it already exists.
-    If the database exists, it is dropped and recreated.
-    Additionally, the script sets up three schemas within
-    the database: 'bronze', 'silver', and 'gold'.
 
-WARNING:
-    Running this script will drop the entire 'DataWarehouse'
-    database if it exists. All data in the database will be
-    permanently deleted. Proceed with caution and ensure
-    you have proper backups before running this script.
-*/
 
-USE master;
-GO
-
--- Drop and recreate the 'DataWarehouse' database
-IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouse')
-BEGIN
-    ALTER DATABASE DataWarehouse SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE DataWarehouse;
-END;
-GO
-
--- Create the 'DataWarehouse' database
-CREATE DATABASE DataWarehouse;
-GO
-
-USE DataWarehouse;
-GO
-
--- Create Schemas
-CREATE SCHEMA bronze;
-GO
-
-CREATE SCHEMA silver;
-GO
-
-CREATE SCHEMA gold;
-GO
 
   CREATE OR ALTER PROCEDURE bronze.load_bronze AS
 BEGIN
